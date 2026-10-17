@@ -12,6 +12,12 @@ Chief of Staff launch film, v15. Published 17 October 2026.
 
 The original export is preserved without re-encoding. Stills are extracted from this version, rather than reconstructed from a later edit. The supplied closing-frame screenshot is preserved separately.
 
+## Inline playback
+
+The README begins with GitHub's native inline player, hosted as a repository attachment. Its 5,745,580-byte playback rendition preserves the complete 64.5-second v15 cut at 1920 × 1080 with H.264/AAC encoding. The original export above is unchanged. GitHub renders this as a click-to-play player. It does not retain autoplay or loop attributes in README video rendering.
+
+[Native inline attachment](https://github.com/user-attachments/assets/e32e7fc3-2e8a-401b-90b7-edaa72fa1282) · [Launch media record](https://github.com/cmills-dev/chief-of-staff/issues/1)
+
 ## Selected frames
 
 | Asset | Film time | Content |

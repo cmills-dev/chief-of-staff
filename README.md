@@ -1,3 +1,5 @@
+https://github.com/user-attachments/assets/e32e7fc3-2e8a-401b-90b7-edaa72fa1282
+
 <p align="center">
   <img src="docs/brand/chief-of-staff-logo.png" width="76" alt="Chief of Staff logo" />
 </p>
@@ -11,7 +13,7 @@
   <a href="docs/launch-assets.md">Media kit</a>
 </p>
 
-[![Go to sleep. Wake up sorted. Watch the Chief of Staff launch film.](docs/media/closing-frame.png)](docs/media/chief-of-staff-v15.mp4)
+![Go to sleep. Wake up sorted.](docs/media/closing-frame.png)
 
 <p align="center"><strong>Go to sleep. Wake up sorted.</strong><br />Launch film v15 · 64.5 seconds · 1080p · sound on</p>
 
@@ -95,7 +97,7 @@ These components provide useful starting points. Cloning them does not recreate 
 - [Social preview, 1280 × 640](docs/brand/social-preview.png).
 - [Frame timings, transcript and asset notes](docs/launch-assets.md).
 
-The README uses a linked poster for the film so it works with GitHub's Markdown rendering. Open the film link to play or download the MP4.
+The video at the top uses GitHub's native inline player. Press play to watch it here, or use the original MP4 link to download the full export.
 
 ---
 
