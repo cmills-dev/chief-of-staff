@@ -1,0 +1,82 @@
+{
+  "index.html": {
+    "bytes": 8551,
+    "sha256": "53ac246fc38882c70df7c0bff70c0062206796a92464a916070aee65e47b55a0"
+  },
+  "README.md": {
+    "bytes": 6754,
+    "sha256": "3e77f536a8402678c8f725d36626a8424524bcf2abb8b90724132bae4de47505"
+  },
+  ".gitignore": {
+    "bytes": 23,
+    "sha256": "32b2dd7912ea54e02bcb2d85d94ee2a1fe0e74675f20bbbabeb7823055acb249"
+  },
+  "docs/launch-assets.md": {
+    "bytes": 2736,
+    "sha256": "82dc4c1836dba4fd7791745a51e153fd3179bd3586b85aaa62c90e684fce6f21"
+  },
+  "docs/brand/chief-of-staff-mark-dark.svg": {
+    "bytes": 394,
+    "sha256": "7c59460718dc7468c532cc5f7b04434b6e2ce6ef9b804b67b66daeda5fb876d4"
+  },
+  "docs/brand/social-preview.png": {
+    "bytes": 36404,
+    "sha256": "93f7d0d417ed8ed8a1e5ec8429bcb56495cf9a89e4c3eaad89c46887861a9de3"
+  },
+  "docs/brand/social-preview.jpg": {
+    "bytes": 70668,
+    "sha256": "03c71d2dcf9f57d32aecc6c3f4d88fed3cc791e6f6ab3826226927ed60ab106d"
+  },
+  "docs/brand/chief-of-staff-mark.svg": {
+    "bytes": 390,
+    "sha256": "bc303c9ac8d66b86a0a505c9011497881745831ff49fd45d2cc776279aeaa78f"
+  },
+  "docs/brand/chief-of-staff-logo.png": {
+    "bytes": 2044,
+    "sha256": "f769970316bdf32846838a4ef470d3350f11baa57da129e992b73fc02be838e4"
+  },
+  "docs/media/chief-of-staff-v15.mp4": {
+    "bytes": 18072853,
+    "sha256": "30a90b6d82a712ef3626919b384f4a447b6e8f4a88a6428f44b55de245aaeebd"
+  },
+  "docs/media/title.jpg": {
+    "bytes": 44814,
+    "sha256": "1e52f849a3b34c38b61680730d15807811e190c1b8dcc262e497f5356450eebd"
+  },
+  "docs/media/raise-priorities.jpg": {
+    "bytes": 54863,
+    "sha256": "4ec7cde5bd9ec4d8284fee5ee81a2862e3f4c07796ff3a1cbd5a7ec81ca825ce"
+  },
+  "docs/media/weekly-strategy.jpg": {
+    "bytes": 68953,
+    "sha256": "67c54c8739fadef82be9acdb43fc50a0183a270648df6ba28c7f09a2c6de9f30"
+  },
+  "docs/media/closing-promise.jpg": {
+    "bytes": 30374,
+    "sha256": "8dd024ad5326b30133afca3ec296a5a827ed21748010266e67a27f251f78b411"
+  },
+  "docs/media/closing-frame.png": {
+    "bytes": 273357,
+    "sha256": "d57fae0d5044f35dce0a424facf71e3c6a71cd2acc82ad24764248b5fdf84593"
+  },
+  "docs/media/wordmark.jpg": {
+    "bytes": 24144,
+    "sha256": "c9c452e5cc9c6071da7e5602bccbe7ea8f022ad672cc55d46631aa97e837ce78"
+  },
+  "docs/media/action-log.jpg": {
+    "bytes": 71030,
+    "sha256": "a43fd4452d54a54c7c253b10bdb5f599846ee84885edb1fc563c1e778c149fb8"
+  },
+  "docs/media/morning-note.jpg": {
+    "bytes": 54575,
+    "sha256": "a7babc303be1194a6437a0fcf97e009190bc8ba75631350bc12896d8f119bb61"
+  },
+  "docs/media/close-on-proof.jpg": {
+    "bytes": 52941,
+    "sha256": "6f18b682bcacdcc23a2164bfc9f49ea8362441e50b4635dfffe2915a68100399"
+  },
+  "docs/media/read-the-day.jpg": {
+    "bytes": 51983,
+    "sha256": "764362a981e8d1a17ab4fb1fe75907d4cf056e303391fe0ccd768b361bf6c47b"
+  }
+}
