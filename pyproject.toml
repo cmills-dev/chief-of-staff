@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chief-of-staff-local"
+version = "0.1.0"
+description = "Protected decisions, commitments and current evidence for local work"
+requires-python = ">=3.10"
+license = {text = "MIT, source code only"}
+authors = [{name = "Cameron Mills"}]
+dependencies = []
+
+[project.scripts]
+chief = "chief_of_staff.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chief_of_staff*"]

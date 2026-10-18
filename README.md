@@ -19,7 +19,36 @@ https://github.com/user-attachments/assets/e32e7fc3-2e8a-401b-90b7-edaa72fa1282
 
 Chief of Staff is the overnight coordination layer in my personal AI command centre. It reviews the system's recorded work, surfaces what needs attention, carries out a limited set of permitted maintenance actions, and leaves a thinking-ahead note for the morning.
 
-**This repository is the public project showcase and launch media kit.** It contains the film, selected frames, the original system mark and an explanation of the design. The live Chief of Staff installation is part of my private command centre. A standalone installable Chief of Staff package is not included here.
+**The repository now includes a runnable local core alongside the launch film.** The core keeps protected decisions, confirmed commitments and file evidence, then produces an attention report. Its watcher updates that report when local state or recorded evidence changes.
+
+The film illustrates the broader private installation. Inbox, calendar, school systems, scheduled maintenance and the desktop dashboard are separate integrations. They are not bundled with this local core.
+
+## Try the local core
+
+Use Python 3.10 or newer. The core has no runtime dependencies or model credentials.
+
+```sh
+git clone https://github.com/cmills-dev/chief-of-staff.git
+cd chief-of-staff
+python3 -m chief_of_staff --project /path/to/your/project init
+python3 -m chief_of_staff --project /path/to/your/project status
+python3 examples/demo.py
+```
+
+Run the same commands from Claude, Codex or a terminal. The policy and state transitions are the same. The core does not launch another model or make an API call. Its report uses fixed text, so it has no model quota or billing requirement.
+
+For an installed `chief` command, use `python3 -m pip install .`. See [the command guide](docs/local-core.md) for decisions, promotion, evidence, blocking and the watcher. Test with `python3 -m unittest discover -s tests -v`.
+
+| Included in the local core | Behaviour |
+| --- | --- |
+| Protected decisions | A recorded reason and review state control whether linked work can complete. |
+| Current evidence | Changed or missing artifacts invalidate a saved completion receipt. |
+| Explicit commitments | Scratch work stays outside active work until confirmed promotion. |
+| Actionable attention | Blocked tasks name responsibility, the cause and the next decision. |
+| Local reconciliation | A shared locked engine writes the current report when explicitly enabled. |
+| Reactive checks | A bounded watcher coalesces state and evidence changes, with retry backoff. |
+
+The current release checks file consistency and recorded review state. A file hash does not prove that a result is correct. Confirmation and source fields are an audit contract, rather than proof of who operated the command. Direct JSON edits are outside the transition API guarantees.
 
 ## The night shift
 
@@ -33,7 +62,7 @@ The nightly pass reads job health, session handovers, the timed work queue, dead
 
 ![A stylised priority list in the Chief of Staff film.](docs/media/raise-priorities.jpg)
 
-The thinking-ahead note puts unresolved work and useful next steps in one place. Work outside the permitted action list stays a recommendation. Decisions involving money, applications or other people remain with the owner.
+The thinking-ahead note puts unresolved work and useful next steps in one place. Work outside the permitted action list stays a recommendation. Decisions involving money, applications or other people remain with the user.
 
 ### 03 / Keep safe work moving
 
@@ -70,7 +99,7 @@ On Sundays, the separate Strategist reviews the bigger picture: what is working,
 | Visible actions | An action log records what changed and why. |
 | Honest undo | Reversible actions carry a command. Irreversible actions are identified as such. |
 | Explicit coverage | A stale snapshot or an unavailable source is reported as a gap. |
-| Human direction | Larger changes and consequential decisions come back to the owner. |
+| Human direction | Larger changes and consequential decisions come back to the user. |
 
 The systems begin in a dry-run state and require an explicit enable flag. The film is a designed explanation of the workflow, with simplified example counts and interface compositions. It is not a screen recording, a benchmark or a guarantee that every issue is resolved overnight.
 
@@ -103,4 +132,4 @@ The video at the top uses GitHub's native inline player. Press play to watch it 
 
 Built by [Cameron Mills](https://thecameronmills.com). Practical AI systems, tools and automation.
 
-© 2026 Cameron Mills. Launch media and branding are published for viewing. No reuse licence is granted by this showcase. Related code repositories have their own licences.
+© 2026 Cameron Mills. Launch media and branding are published for viewing. Source code in this repository has an MIT licence, scoped in [LICENSE](LICENSE). Launch media and branding have no reuse licence. Related code repositories have their own licences.
