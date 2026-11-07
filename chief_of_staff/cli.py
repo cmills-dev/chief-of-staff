@@ -1,11 +1,23 @@
 """The same local command interface for a person, Claude or Codex."""
 
 import argparse
+import datetime as dt
 import json
 from pathlib import Path
 import sys
 import time
-from . import atomic, decisions, runtime, tasks, watch
+from . import (
+    atomic,
+    booking,
+    decisions,
+    drafts,
+    notes,
+    outreach,
+    policy,
+    runtime,
+    tasks,
+    watch,
+)
 from .locking import Busy
 
 
@@ -68,7 +80,53 @@ def parser():
         if action == "snapshot":
             a.add_argument("--path", required=True)
             a.add_argument("--assumption", required=True)
+    q = sub.add_parser("policy", help="Check a request against the permission policy")
+    q.add_argument("--role", default="assistant")
+    q.add_argument("--branch", default="")
+    g = q.add_mutually_exclusive_group(required=True)
+    g.add_argument("--text", help="A command or request to check against the hard denies")
+    g.add_argument("--git", help="A git command line to check for the role")
+    g.add_argument("--outbound", help="An outbound verb such as draft, send or reply")
+    q = sub.add_parser("draft", help="Draft-only email")
+    dsub = q.add_subparsers(dest="action", required=True)
+    a = dsub.add_parser("save")
+    a.add_argument("--to", action="append", required=True)
+    a.add_argument("--cc", action="append", default=[])
+    a.add_argument("--subject", required=True)
+    a.add_argument("--body-file", type=Path, required=True)
+    a.add_argument("--sender", default="")
+    a.add_argument("--note", default="")
+    a.add_argument("--backend", choices=("auto", "eml", "apple-mail"), default="auto")
+    a.add_argument("--eml-folder", type=Path)
+    dsub.add_parser("list")
+    a = dsub.add_parser("done")
+    a.add_argument("key")
+    q = sub.add_parser("note", help="PDF-only research notes")
+    nsub = q.add_subparsers(dest="action", required=True)
+    a = nsub.add_parser("render")
+    a.add_argument("--src", type=Path, required=True)
+    a.add_argument("--out", type=Path, required=True)
+    a.add_argument("--title", default="")
+    q = sub.add_parser("book", help="Book a calendar slot and verify it by read-back")
+    q.add_argument("--calendar-folder", type=Path, required=True)
+    q.add_argument("--key", required=True)
+    q.add_argument("--title", required=True)
+    q.add_argument("--at", required=True, help="ISO time with a UTC offset")
+    q.add_argument("--minutes", type=int, default=45)
+    q.add_argument("--note", default="")
+    q.add_argument("--actor", default="assistant")
+    q = sub.add_parser("outreach", help="Scan for outreach drafted and never sent")
+    q.add_argument("action", choices=("scan",))
     return p
+
+
+def _backends(a):
+    if a.backend == "auto":
+        return None
+    folder = a.eml_folder or atomic.state_dir(a.project.resolve()) / "drafts"
+    if a.backend == "eml":
+        return [drafts.EmlBackend(folder)]
+    return [drafts.AppleMailBackend(), drafts.EmlBackend(folder)]
 
 
 def main(argv=None):
@@ -141,12 +199,50 @@ def main(argv=None):
                     )
 
                 out = dict(result=decisions.mutate(path, operation))
+        elif a.command == "policy":
+            pol = policy.Policy.load(root)
+            if a.text is not None:
+                verdict = pol.check_text(a.text)
+            elif a.git is not None:
+                verdict = pol.check_git(a.role, a.git, a.branch)
+            else:
+                verdict = pol.check_outbound(a.outbound)
+            out = verdict.as_dict()
+            print(json.dumps(out, indent=2, sort_keys=True))
+            return 0 if verdict.allowed else 2
+        elif a.command == "draft":
+            if not base.is_dir():
+                raise ValueError("Run init for this project first")
+            if a.action == "save":
+                out = drafts.save(
+                    root, a.to, a.subject, a.body_file.read_text(encoding="utf-8"),
+                    cc=a.cc, sender=a.sender, backends=_backends(a),
+                    eml_folder=a.eml_folder, note=a.note,
+                )
+            elif a.action == "list":
+                out = dict(waiting=drafts.waiting(root))
+            else:
+                out = dict(done=drafts.mark_done(root, a.key))
+        elif a.command == "note":
+            out = notes.render_pdf(
+                a.src.read_text(encoding="utf-8"), a.out, title=a.title, src=a.src
+            )
+        elif a.command == "book":
+            if not base.is_dir():
+                raise ValueError("Run init for this project first")
+            out = booking.book(
+                root, booking.IcsFolderBackend(a.calendar_folder), key=a.key,
+                title=a.title, start=dt.datetime.fromisoformat(a.at),
+                minutes=a.minutes, note=a.note, actor=a.actor,
+            )
+        elif a.command == "outreach":
+            out = dict(unsent=outreach.scan(outreach.load_config(root)))
         print(json.dumps(out, indent=2, sort_keys=True))
-        return 1 if out.get("status") in ("failed", "degraded", "interrupted") else 0
+        return 1 if out.get("status") in ("failed", "degraded", "interrupted", "uncertain") else 0
     except Busy as exc:
         print(str(exc), file=sys.stderr)
         return 75
-    except (OSError, ValueError, TypeError, KeyError) as exc:
+    except (OSError, ValueError, TypeError, KeyError, notes.RenderError) as exc:
         print("chief: " + str(exc), file=sys.stderr)
         return 1
 

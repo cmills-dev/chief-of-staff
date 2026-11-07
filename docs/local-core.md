@@ -86,6 +86,74 @@ chief disable
 
 Disabling report writes also prevents a live watch tick. A dry run does not advance the cursor. The watcher reads no inbox, calls no model and executes no arbitrary shell commands. It writes attention reports. Task completion and decision changes remain explicit commands.
 
+## Permission policy
+
+```sh
+chief policy --text "pay the supplier invoice"
+chief policy --outbound send
+chief policy --role chief --branch main --git "git merge --no-ff feature/report"
+chief policy --role build --branch main --git "git merge --no-ff feature/report"
+```
+
+The command prints a JSON verdict. It exits 0 when the request is allowed and 2 when it is denied. A hook or wrapper in your assistant can call it before running a command.
+
+The hard denies are payments and file deletion. Other requests are allowed. Outbound verbs (`send`, `reply`, `forward`, `post`, `publish`) are denied while `outbound` is `draft-only`, which is the default. A draft is always allowed.
+
+For git, push, rebase, reset, clean, amend, squash merges, branch deletion and worktree removal are denied for every role. The Chief role (`merge_roles`) may add, commit, branch, apply and merge with `--no-ff`. Any other role needs review before a commit or merge reaches the main branch.
+
+`.chief/policy.json` is optional. Every key is optional:
+
+```json
+{
+  "outbound": "draft-only",
+  "main_branch": "main",
+  "merge_roles": ["chief"],
+  "extra_patterns": {"payment": ["\\bwire\\b"]}
+}
+```
+
+`patterns` replaces the default pattern lists. `extra_patterns` adds to them. The policy is a check that your tooling calls. It does not sandbox a process.
+
+## Draft-only email
+
+```sh
+chief draft save --to someone@example.com --subject "Weekly summary" --body-file body.txt
+chief draft list
+chief draft done DRAFT-KEY
+```
+
+On macOS, `--backend auto` saves into the Drafts mailbox through Mail. If Mail is unavailable or refuses, the draft becomes an `.eml` file with an `X-Unsent: 1` header in `.chief/drafts/`. Use `--backend eml` and `--eml-folder` to choose the portable file backend on any system. Mail opens the file as a draft that is ready to send.
+
+The module has no send path. Each save adds a `draft-email` entry to `.chief/audit.jsonl` with the recipients and subject, and no body. The same draft is not saved twice while it waits. A draft stops waiting when you run `done`, when its `.eml` file is moved away, or after seven days. `chief status` lists waiting drafts under `drafts_waiting`, and the note prints them under "Drafts waiting for you".
+
+## PDF-only notes
+
+```sh
+chief note render --src /tmp/draft.md --out notes/summary.pdf
+```
+
+Keep the markdown draft in a temporary folder. The command refuses an output that is not a `.pdf`, a draft that sits in the destination folder, a markdown file with the same name beside the PDF, and an empty note. Pandoc builds an HTML page and headless Chrome prints it. Set `CHIEF_CHROME` to choose the browser. If Chrome fails, pandoc with `xelatex` renders the same draft. If every engine fails, nothing is written.
+
+## Verified calendar bookings
+
+```sh
+chief book --calendar-folder calendar --key review-1 --title "Review" --at 2026-11-10T14:00:00+00:00 --minutes 30
+```
+
+The command writes an event, reads it back by its key and compares title, start and end. Only a match records a `verified` receipt in `.chief/bookings.json`. A mismatch or a missing event is `uncertain` and the command exits 1. A clash with an existing event is `failed`. The same key is never written twice, because a second write could duplicate the event. Use a new key after you check the calendar.
+
+The bundled backend keeps one `.ics` file per event in a folder. A calendar app can import or subscribe to that folder. Another calendar needs a small backend class with `write`, `read_back` and optionally `conflicts`.
+
+## Unsent outreach
+
+Create `.chief/outreach.json`:
+
+```json
+{"folders": ["~/notes/*prep"], "file_glob": "*outreach*.md", "max_age_days": 14, "limit": 5}
+```
+
+`chief outreach scan` lists matching files that say nothing was sent and carry no sent marker. The scan only reads. `chief status` raises each file as an `unsent-outreach` exception. With no configuration, nothing is scanned.
+
 ## Assistant compatibility and platform coverage
 
 Claude and Codex call the same CLI and read the same JSON. Neither provider chooses a different policy. This release includes no subscription quota adapters, model-generated note calls, browser integration or automatic assistant execution.

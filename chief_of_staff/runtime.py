@@ -4,7 +4,7 @@ import datetime as dt
 import hashlib
 import json
 from pathlib import Path
-from . import atomic, decisions, tasks
+from . import atomic, decisions, drafts, outreach, tasks
 from .locking import file_lock
 
 
@@ -86,6 +86,22 @@ def report(root):
                 next_decision="Repair saved state before changing commitments.",
             )
         )
+    try:
+        out["exceptions"].extend(outreach.exceptions(root))
+        out["drafts_waiting"] = [
+            x for x in drafts.summary_lines(root, persist=False) if x != "No drafts waiting."
+        ]
+    except (OSError, ValueError) as exc:
+        out["drafts_waiting"] = []
+        out["exceptions"].append(
+            dict(
+                kind="state-error",
+                title="Draft or outreach records need repair",
+                owner="maintainer",
+                reason=str(exc),
+                next_decision="Repair saved state before relying on the daily summary.",
+            )
+        )
     out["at"] = now()
     out["status"] = (
         "degraded" if out["error"] else "attention" if out["exceptions"] else "ok"
@@ -109,6 +125,8 @@ def render(value):
     for item in value["tasks"]:
         lines.append(item["id"] + ": " + item["title"] + " (" + item["status"] + ")")
     lines.append("Scratch drafts: " + str(value["counts"].get("scratch", 0)))
+    lines += ["", "Drafts waiting for you"]
+    lines += value.get("drafts_waiting") or ["No drafts waiting."]
     return "\n".join(lines) + "\n"
 
 

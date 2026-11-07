@@ -50,6 +50,22 @@ For an installed `chief` command, use `python3 -m pip install .`. See [the comma
 
 The current release checks file consistency and recorded review state. A file hash does not prove that a result is correct. Confirmation and source fields are an audit contract, rather than proof of who operated the command. Direct JSON edits are outside the transition API guarantees.
 
+## Permissions, drafts, PDF notes and bookings
+
+Version 0.2.0 adds these configurable features to the local core. Each one runs from the `chief` command and has no runtime dependency.
+
+| Feature | Behaviour |
+| --- | --- |
+| Permission policy | The only hard denies are payments and file deletion. Outbound messages are draft-only. `.chief/policy.json` changes the defaults. |
+| Draft-only email | `chief draft save` writes a draft through Apple Mail on macOS or a portable `.eml` file. It never sends, and it records an audit entry. |
+| Drafts waiting | The attention report and its note list every draft that still waits for a person. |
+| PDF-only notes | `chief note render` turns a markdown draft into a PDF with pandoc and headless Chrome, or a LaTeX fallback. It refuses `.md` output. |
+| Chief-scoped merge | The Chief role may commit and merge `--no-ff` into the main branch. Other roles keep a review-first path. Push is denied for every role. |
+| Verified bookings | `chief book` writes a calendar event to an `.ics` folder and records a receipt only after it reads the event back. |
+| Unsent outreach | `chief outreach scan` finds outreach notes in configured folders that say nothing was sent. The report raises each one. |
+
+See [the command guide](docs/local-core.md#permission-policy) for the options.
+
 ## The night shift
 
 ### 01 / Read the day
